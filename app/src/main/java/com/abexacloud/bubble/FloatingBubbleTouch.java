@@ -1,13 +1,14 @@
 package com.abexacloud.bubble;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
 public class FloatingBubbleTouch implements View.OnTouchListener {
-
-    private static final int TOUCH_CLICK_TIME = 250;
+    public static final String TAG = FloatingBubbleTouch.class.getSimpleName();
+    private static final int TOUCH_CLICK_TIME = 150;
     private static final float EXPANSION_FACTOR = 1.25f;
 
     private int sizeX;
@@ -48,7 +49,6 @@ public class FloatingBubbleTouch implements View.OnTouchListener {
         sizeY = builder.sizeY;
         sizeX = builder.sizeX;
         marginBottom = builder.marginBottom;
-
         bubbleParams = (WindowManager.LayoutParams) bubbleView.getLayoutParams();
         removeBubbleParams = (WindowManager.LayoutParams) removeBubbleView.getLayoutParams();
         expandableParams = (WindowManager.LayoutParams) expandableView.getLayoutParams();
@@ -68,6 +68,7 @@ public class FloatingBubbleTouch implements View.OnTouchListener {
         switch (motionEvent.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 touchStartTime = System.currentTimeMillis();
+                Log.i(TAG, "Called");
                 if (listener != null) {
                     listener.onDown(motionEvent.getRawX(), motionEvent.getRawY());
                 }
@@ -122,11 +123,11 @@ public class FloatingBubbleTouch implements View.OnTouchListener {
         float clipSize = bubbleView.getWidth();
 
         float leftX = motionEvent.getRawX() - halfClipSize;
-        leftX = (leftX > sizeX - clipSize) ? (sizeX - clipSize) : leftX;
+        leftX = Math.min(leftX, sizeX - clipSize);
         leftX = leftX < 0 ? 0 : leftX;
 
         float topY = motionEvent.getRawY() - halfClipSize;
-        topY = (topY > sizeY - clipSize) ? (sizeY - clipSize) : topY;
+        topY = Math.min(topY, sizeY - clipSize);
         topY = topY < 0 ? 0 : topY;
 
         bubbleParams.x = (int) leftX;
@@ -154,9 +155,7 @@ public class FloatingBubbleTouch implements View.OnTouchListener {
     }
 
     private boolean isInsideRemoveBubble() {
-        int bubbleSize = removeBubbleView.getWidth() == 0
-                ? removeBubbleStartSize
-                : removeBubbleView.getWidth();
+        int bubbleSize = removeBubbleView.getWidth() == 0 ? removeBubbleStartSize : removeBubbleView.getWidth();
         int top = removeBubbleParams.y;
         int right = removeBubbleParams.x + bubbleSize;
         int bottom = removeBubbleParams.y + bubbleSize;

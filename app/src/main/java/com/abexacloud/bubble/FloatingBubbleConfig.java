@@ -8,6 +8,14 @@ import android.view.View;
 
 import androidx.core.content.ContextCompat;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+/**
+ * Esta clase permite configurar atributos de la burbuja icono, icono de cierre y
+ * contenido cuando es presionado
+ */
+@Getter
 public class FloatingBubbleConfig {
     private Drawable bubbleIcon;
     private Drawable removeBubbleIcon;
@@ -22,6 +30,11 @@ public class FloatingBubbleConfig {
     private int borderRadiusDp;
     private boolean physicsEnabled;
 
+    /**
+     * Constructor
+     *
+     * @param builder
+     */
     private FloatingBubbleConfig(Builder builder) {
         bubbleIcon = builder.bubbleIcon;
         removeBubbleIcon = builder.removeBubbleIcon;
@@ -37,6 +50,12 @@ public class FloatingBubbleConfig {
         removeBubbleAlpha = builder.removeBubbleAlpha;
     }
 
+    /**
+     * Obtiene una instancia lista con parametros predeterminados para el Bubble
+     *
+     * @param context
+     * @return new instance of Builder
+     */
     public static Builder getDefaultBuilder(Context context) {
         return new Builder()
                 .bubbleIcon(ContextCompat.getDrawable(context, R.drawable.bubble_default_icon))
@@ -51,58 +70,17 @@ public class FloatingBubbleConfig {
                 .gravity(Gravity.END);
     }
 
+    /**
+     * Obtiene un FloatingBubbleConfig con los parametros predeterminados
+     *
+     * @param context
+     * @return FloatingBubbleConfig
+     */
     public static FloatingBubbleConfig getDefault(Context context) {
         return getDefaultBuilder(context).build();
     }
 
-    public Drawable getBubbleIcon() {
-        return bubbleIcon;
-    }
-
-    public Drawable getRemoveBubbleIcon() {
-        return removeBubbleIcon;
-    }
-
-    public View getExpandableView() {
-        return expandableView;
-    }
-
-    public int getBubbleIconDp() {
-        return bubbleIconDp;
-    }
-
-    public int getRemoveBubbleIconDp() {
-        return removeBubbleIconDp;
-    }
-
-    public int getExpandableColor() {
-        return expandableColor;
-    }
-
-    public int getTriangleColor() {
-        return triangleColor;
-    }
-
-    public int getGravity() {
-        return gravity;
-    }
-
-    public int getPaddingDp() {
-        return paddingDp;
-    }
-
-    public boolean isPhysicsEnabled() {
-        return physicsEnabled;
-    }
-
-    public int getBorderRadiusDp() {
-        return borderRadiusDp;
-    }
-
-    public float getRemoveBubbleAlpha() {
-        return removeBubbleAlpha;
-    }
-
+    @NoArgsConstructor
     public static final class Builder {
         private Drawable bubbleIcon;
         private Drawable removeBubbleIcon;
@@ -116,9 +94,6 @@ public class FloatingBubbleConfig {
         private int borderRadiusDp = 4;
         private float removeBubbleAlpha = 1.0f;
         private boolean physicsEnabled = true;
-
-        public Builder() {
-        }
 
         public Builder bubbleIcon(Drawable val) {
             bubbleIcon = val;
@@ -157,12 +132,9 @@ public class FloatingBubbleConfig {
 
         public Builder gravity(int val) {
             gravity = val;
-            if (gravity == Gravity.CENTER ||
-                    gravity == Gravity.CENTER_VERTICAL ||
-                    gravity == Gravity.CENTER_HORIZONTAL) {
+            if (gravity == Gravity.CENTER || gravity == Gravity.CENTER_VERTICAL || gravity == Gravity.CENTER_HORIZONTAL) {
                 gravity = Gravity.CENTER_HORIZONTAL;
-            } else if (gravity == Gravity.TOP ||
-                    gravity == Gravity.BOTTOM) {
+            } else if (gravity == Gravity.TOP || gravity == Gravity.BOTTOM) {
                 gravity = Gravity.END;
             }
             return this;

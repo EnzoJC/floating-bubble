@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +19,14 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.abexacloud.bubble.adapter.CustomAdapter;
 
 public class FloatingBubbleService extends Service {
     protected static final String TAG = FloatingBubbleService.class.getSimpleName();
@@ -66,7 +73,7 @@ public class FloatingBubbleService extends Service {
             return Service.START_NOT_STICKY;
         }
 
-        logger.log("Start with START_STICKY");
+        Log.d(TAG, "Start with START_STICKY");
 
         // Remove existing views
         removeAllViews();
@@ -76,9 +83,7 @@ public class FloatingBubbleService extends Service {
         setupViews();
         setTouchListener();
         return super.onStartCommand(intent, flags, Service.START_STICKY);
-
     }
-
 
     @Override
     public void onDestroy() {
@@ -111,7 +116,6 @@ public class FloatingBubbleService extends Service {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
     }
 
     private void setupWindowManager() {
@@ -144,19 +148,25 @@ public class FloatingBubbleService extends Service {
         removeBubbleParams.gravity = Gravity.TOP | Gravity.START;
         removeBubbleParams.width = dpToPixels(config.getRemoveBubbleIconDp());
         removeBubbleParams.height = dpToPixels(config.getRemoveBubbleIconDp());
-        removeBubbleParams.x = (windowSize.x - removeBubbleParams.width) / 2;
-        removeBubbleParams.y = windowSize.y - removeBubbleParams.height - bottomMargin;
+        removeBubbleParams.x = (windowSize.x - removeBubbleParams.width) / 2; // Permite centrar el icono en X
+        removeBubbleParams.y = windowSize.y - removeBubbleParams.height - bottomMargin; // Permite ubicarlo en la parte inferior de la pantalla
         removeBubbleView.setVisibility(View.GONE);
-        removeBubbleView.setAlpha(config.getRemoveBubbleAlpha());
-        windowManager.addView(removeBubbleView, removeBubbleParams);
+        removeBubbleView.setAlpha(config.getRemoveBubbleAlpha()); // Permite cambiar el alpha (transparencia) del icono
+        windowManager.addView(removeBubbleView, removeBubbleParams); //
 
         // Setting up the Expandable View setup
-        expandableParams = getDefaultWindowParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        expandableParams = getDefaultWindowParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         expandableParams.height = windowSize.y - iconSize - bottomMargin;
         expandableParams.gravity = Gravity.TOP | Gravity.START;
         expandableView.setVisibility(View.GONE);
         ((LinearLayout) expandableView).setGravity(config.getGravity());
         expandableView.setPadding(padding, padding, padding, padding);
+
+        // build dinamic items
+        RecyclerView rvOptions = expandableView.findViewById(R.id.rvOptions);   // binding
+        rvOptions.setLayoutManager(new LinearLayoutManager(this));
+        rvOptions.setAdapter(new CustomAdapter(new String[]{"Item1","Item2","Item3"}));
+
         windowManager.addView(expandableView, expandableParams);
 
         // Setting up the Floating Bubble View
@@ -173,30 +183,28 @@ public class FloatingBubbleService extends Service {
         if (config.getBubbleIcon() != null) {
             ((ImageView) bubbleView).setImageDrawable(config.getBubbleIcon());
         }
-
-        CardView card = (CardView) expandableView.findViewById(R.id.expandableViewCard);
-        card.setRadius(dpToPixels(config.getBorderRadiusDp()));
-
-        ImageView triangle = (ImageView) expandableView.findViewById(R.id.expandableViewTriangle);
-        LinearLayout container = (LinearLayout) expandableView.findViewById(R.id.expandableViewContainer);
-        if (config.getExpandableView() != null) {
-            triangle.setColorFilter(config.getTriangleColor());
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) triangle.getLayoutParams();
-            params.leftMargin = dpToPixels((config.getBubbleIconDp() - 16) / 2);
-            params.rightMargin = dpToPixels((config.getBubbleIconDp() - 16) / 2);
-
-            triangle.setVisibility(View.VISIBLE);
-            container.setVisibility(View.VISIBLE);
-            card.setVisibility(View.VISIBLE);
-
-            container.setBackgroundColor(config.getExpandableColor());
-            container.removeAllViews();
-            container.addView(config.getExpandableView());
-        } else {
-            triangle.setVisibility(View.GONE);
-            container.setVisibility(View.GONE);
-            card.setVisibility(View.GONE);
-        }
+        // Se inyectara el contenido en el expandableVie
+        // CardView card = expandableView.findViewById(R.id.expandableViewCard);
+        // card.setRadius(dpToPixels(config.getBorderRadiusDp())); // Permite cambiar el radio del borde del card
+        // ImageView triangle = expandableView.findViewById(R.id.expandableViewTriangle);
+        // LinearLayout container = expandableView.findViewById(R.id.expandableViewContainer);
+//        if (config.getExpandableView() != null) {
+//            triangle.setColorFilter(config.getTriangleColor());
+//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) triangle.getLayoutParams();
+//            Toast.makeText(this, "X: " + triangle.getDrawable().getIntrinsicWidth(), Toast.LENGTH_SHORT).show();
+//            params.leftMargin = dpToPixels((config.getBubbleIconDp() - 16*2) / 2);
+//            params.rightMargin = dpToPixels((config.getBubbleIconDp() - 16*2) / 2);
+//            triangle.setVisibility(View.VISIBLE);
+//            container.setVisibility(View.VISIBLE);
+//            card.setVisibility(View.VISIBLE);
+//            container.setBackgroundColor(config.getExpandableColor());
+//            container.removeAllViews();
+//            container.addView(config.getExpandableView());
+//        } else {
+//            triangle.setVisibility(View.GONE);
+//            container.setVisibility(View.GONE);
+//            card.setVisibility(View.GONE);
+//        }
     }
 
     /**
@@ -258,9 +266,7 @@ public class FloatingBubbleService extends Service {
      * @return the layout param
      */
     protected WindowManager.LayoutParams getDefaultWindowParams() {
-        return getDefaultWindowParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT);
+        return getDefaultWindowParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     /**
@@ -272,9 +278,7 @@ public class FloatingBubbleService extends Service {
         return new WindowManager.LayoutParams(
                 width,
                 height,
-                Build.VERSION.SDK_INT >= 26
-                        ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                        : WindowManager.LayoutParams.TYPE_PHONE,
+                Build.VERSION.SDK_INT >= 26 ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                         | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,

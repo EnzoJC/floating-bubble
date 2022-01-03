@@ -9,8 +9,8 @@ import android.view.WindowManager;
  * Esta clase permite
  */
 public class FloatingBubbleAnimator {
-    private static final int ANIMATION_TIME = 100;
-    private static final int ANIMATION_STEPS = 5;
+    private static final int ANIMATION_TIME = 500;
+    private static final int ANIMATION_STEPS = 60;
 
     private View bubbleView;
     private WindowManager.LayoutParams bubbleParams;
@@ -31,7 +31,7 @@ public class FloatingBubbleAnimator {
         final float startY = bubbleParams.y;
 
         // Permite animar el tamaño de la vista en 5 pasos de 0 a 5 en 1 segundo
-        ValueAnimator animator = ValueAnimator.ofInt(0, 5).setDuration(ANIMATION_TIME);
+        ValueAnimator animator = ValueAnimator.ofInt(0, ANIMATION_STEPS).setDuration(ANIMATION_TIME);
 
         // Se ejecuta cada vez que se modifica el valor del animador 
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -51,7 +51,7 @@ public class FloatingBubbleAnimator {
                     bubbleParams.y = (int) currentY;
                     bubbleParams.y = Math.max(bubbleParams.y, 0);
                     bubbleParams.y = Math.min(bubbleParams.y, sizeY - bubbleView.getWidth());
-                    
+
                     // Se actualiza la vista en la pantalla
                     windowManager.updateViewLayout(bubbleView, bubbleParams);
                 } catch (Exception exception) {

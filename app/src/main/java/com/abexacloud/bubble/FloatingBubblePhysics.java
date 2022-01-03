@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 public class FloatingBubblePhysics extends DefaultFloatingBubbleTouchListener {
+    public static final String TAG = FloatingBubblePhysics.class.getSimpleName();
 
     private int sizeX;
     private int sizeY;
@@ -50,8 +51,6 @@ public class FloatingBubblePhysics extends DefaultFloatingBubbleTouchListener {
     @Override
     public void onUp(float x, float y) {
         addSelectively(x, y);
-        Log.d(FloatingBubblePhysics.class.getSimpleName(), previous.toString());
-
         if (previous[0] == null) {
             moveToCorner();
         } else {
