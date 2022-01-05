@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Bubble"
 include ':app'
+include ':floating-bubble'
