@@ -4,12 +4,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.WindowManager;
 
 import androidx.core.content.ContextCompat;
 
 import com.abex.floating_bubble.FloatingBubbleConfig;
 import com.abex.floating_bubble.FloatingBubbleService;
+import com.abex.floating_bubble.dto.IBubbleCommand;
 import com.abex.floating_bubble.dto.ItemDTO;
 import com.abexacloud.bubble.R;
 
@@ -18,13 +18,11 @@ import java.util.List;
 
 public class SimpleService extends FloatingBubbleService {
     public static final String TAG = SimpleService.class.getSimpleName();
-    private WindowManager auxWindowManager;
 
     @Override
     public void setupWindow() {
         super.setupWindow();
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        auxWindowManager = windowManager;
+        windowManager = AnyService.windowManager;
     }
 
     @Override
@@ -32,15 +30,33 @@ public class SimpleService extends FloatingBubbleService {
         Context context = getApplicationContext();
         List<ItemDTO> listaItemDTO = new ArrayList<>();
 
-        listaItemDTO.add(new ItemDTO("Atrás", () -> {
-            Log.i(TAG, "A");
-        }));
-        listaItemDTO.add(new ItemDTO("Inicio", () -> {
-            Log.i(TAG, "I");
-        }));
-        listaItemDTO.add(new ItemDTO("Recientes", () -> {
-            Log.i(TAG, "R");
-        }));
+        listaItemDTO.add(new ItemDTO(
+                "Atrás",
+                ContextCompat.getDrawable(context, R.drawable.back),
+                new IBubbleCommand() {
+                    @Override
+                    public void execute() {
+                        Log.i(TAG, "Back");
+                    }
+                }));
+        listaItemDTO.add(new ItemDTO(
+                "Inicio",
+                ContextCompat.getDrawable(context, R.drawable.home),
+                new IBubbleCommand() {
+                    @Override
+                    public void execute() {
+                        Log.i(TAG, "Home");
+                    }
+                }));
+        listaItemDTO.add(new ItemDTO(
+                "Recientes",
+                ContextCompat.getDrawable(context, R.drawable.bubble_default_icon),
+                new IBubbleCommand() {
+                    @Override
+                    public void execute() {
+                        Log.i(TAG, "Recent Apps");
+                    }
+                }));
 
         return new FloatingBubbleConfig.Builder()
 //                .bubbleIcon(ContextCompat.getDrawable(context, R.drawable.web_icon))

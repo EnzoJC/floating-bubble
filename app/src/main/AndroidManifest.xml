@@ -24,9 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!--        <service android:name=".example.SimpleService"></service>-->
+        <service android:name=".example.SimpleService"></service>
         <service
-            android:name=".example.SimpleService"
+            android:name=".example.AnyService"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>

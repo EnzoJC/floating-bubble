@@ -2,6 +2,7 @@ package com.abexacloud.bubble.example;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,8 +18,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // FloatingBubbleConfig
-        FloatingBubblePermissions.startPermissionRequest(this);
-//        startActivityForResult(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS), 101);
+        //startActivityForResult(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS), 101);
         View startBubble = findViewById(R.id.start_bubble);
         startBubble.setOnClickListener(new View.OnClickListener() {
             @Override
