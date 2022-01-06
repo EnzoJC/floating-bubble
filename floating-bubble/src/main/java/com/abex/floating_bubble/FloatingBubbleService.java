@@ -1,6 +1,5 @@
 package com.abex.floating_bubble;
 
-import android.accessibilityservice.AccessibilityService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -31,7 +29,6 @@ import com.abex.floating_bubble.adapter.CustomAdapter;
 public class FloatingBubbleService extends Service {
     protected static final String TAG = FloatingBubbleService.class.getSimpleName();
     private volatile boolean isStart = false;
-    private volatile boolean isWindowsStarts = false;
 
     // Constructor Variable
     protected FloatingBubbleLogger logger;
@@ -64,14 +61,6 @@ public class FloatingBubbleService extends Service {
         logger = new FloatingBubbleLogger().setDebugEnabled(true).setTag(TAG);
     }
 
-//    @Override
-//    public void onAccessibilityEvent(AccessibilityEvent event) {
-//    }
-//
-//    @Override
-//    public void onInterrupt() {
-//    }
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -103,6 +92,7 @@ public class FloatingBubbleService extends Service {
     public void onDestroy() {
         super.onDestroy();
         logger.log("onDestroy");
+        isStart = false;
         removeAllViews();
     }
 
@@ -144,7 +134,7 @@ public class FloatingBubbleService extends Service {
             removeAllViews();
         }
         windowManager.getDefaultDisplay().getSize(windowSize);
-        Log.i(TAG, "X-> " + windowSize.x + " Y-> " + windowSize.y);
+//        Log.i(TAG, "X-> " + windowSize.x + " Y-> " + windowSize.y);
     }
 
     protected LayoutInflater setLayoutInflater() {
@@ -178,7 +168,7 @@ public class FloatingBubbleService extends Service {
         windowManager.addView(removeBubbleView, removeBubbleParams);
 
         // Setting up the Expandable View setup
-        expandableParams = getDefaultWindowParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        expandableParams = getDefaultWindowParams();
         expandableParams.height = windowSize.y - iconSize - bottomMargin;
         expandableParams.gravity = Gravity.TOP | Gravity.START;
         expandableView.setVisibility(View.GONE);
@@ -188,7 +178,7 @@ public class FloatingBubbleService extends Service {
         // build dinamic items
         RecyclerView rvOptions = expandableView.findViewById(R.id.rvOptions);   // binding
         rvOptions.setLayoutManager(new LinearLayoutManager(this));
-        rvOptions.setAdapter(new CustomAdapter(config.getListaItemDTO()));
+        rvOptions.setAdapter(new CustomAdapter(config.getListaItemDTO(), config));
         windowManager.addView(expandableView, expandableParams);
 
         // Setting up the Floating Bubble View
@@ -369,7 +359,7 @@ public class FloatingBubbleService extends Service {
                 setupWindowManager();
                 setupViews();
                 setTouchListener();
-                Log.i(TAG, "Update...");
+//                Log.i(TAG, "Update...");
             }
         }, 500);
     }
