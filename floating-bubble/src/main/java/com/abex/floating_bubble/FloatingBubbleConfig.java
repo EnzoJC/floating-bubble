@@ -13,14 +13,10 @@ import com.abex.floating_bubble.dto.ItemDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 /**
  * Esta clase permite configurar atributos de la burbuja icono, icono de cierre y
  * contenido cuando es presionado
  */
-@Getter
 public class FloatingBubbleConfig {
     private final Drawable bubbleIcon;
     private final Drawable removeBubbleIcon;
@@ -76,7 +72,58 @@ public class FloatingBubbleConfig {
         return getDefaultBuilder(context).build();
     }
 
-    @NoArgsConstructor
+    public Drawable getBubbleIcon() {
+        return bubbleIcon;
+    }
+
+    public Drawable getRemoveBubbleIcon() {
+        return removeBubbleIcon;
+    }
+
+    public View getExpandableView() {
+        return expandableView;
+    }
+
+    public int getBubbleIconDp() {
+        return bubbleIconDp;
+    }
+
+    public int getRemoveBubbleIconDp() {
+        return removeBubbleIconDp;
+    }
+
+    public float getRemoveBubbleAlpha() {
+        return removeBubbleAlpha;
+    }
+
+    public int getExpandableColor() {
+        return expandableColor;
+    }
+
+    public int getTriangleColor() {
+        return triangleColor;
+    }
+
+    public int getGravity() {
+        return gravity;
+    }
+
+    public int getPaddingDp() {
+        return paddingDp;
+    }
+
+    public int getBorderRadiusDp() {
+        return borderRadiusDp;
+    }
+
+    public boolean isPhysicsEnabled() {
+        return physicsEnabled;
+    }
+
+    public List<ItemDTO> getListaItemDTO() {
+        return listaItemDTO;
+    }
+
     public static final class Builder {
         private Drawable bubbleIcon;
         private Drawable removeBubbleIcon;

@@ -30,9 +30,7 @@ public class FloatingBubblePermissions {
             Intent intent = new Intent(
                     Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + activity.getPackageName()));
-            activity.startActivityForResult(
-                    intent,
-                    REQUEST_CODE_ASK_PERMISSIONS);
+            activity.startActivity(intent);
         }
     }
 }

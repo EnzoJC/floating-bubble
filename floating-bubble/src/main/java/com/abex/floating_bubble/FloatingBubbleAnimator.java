@@ -1,12 +1,9 @@
 package com.abex.floating_bubble;
 
-import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-
-import androidx.core.content.ContextCompat;
 
 /**
  * Esta clase permite

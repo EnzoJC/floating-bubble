@@ -9,11 +9,11 @@
 
     <ImageView
         android:id="@+id/itemIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/bubbleSize"
+        android:layout_height="@dimen/bubbleSize"
         android:layout_marginRight="3dp"
         android:contentDescription="@string/floating_bubble_description"
-        android:background="@drawable/bubble_effect"/>
+        android:background="@drawable/bubble_effect" />
 
     <LinearLayout
         android:layout_width="match_parent"

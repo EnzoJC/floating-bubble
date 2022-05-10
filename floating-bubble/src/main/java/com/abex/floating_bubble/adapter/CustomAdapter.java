@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,12 +13,11 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.abex.floating_bubble.FloatingBubbleConfig;
+import com.abex.floating_bubble.FloatingBubbleService;
 import com.abex.floating_bubble.R;
 import com.abex.floating_bubble.dto.ItemDTO;
 
 import java.util.List;
-
-import lombok.Getter;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
     public static final String TAG = CustomAdapter.class.getSimpleName();
@@ -64,14 +64,27 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final @Getter TextView textView;
-        private final @Getter LinearLayout linearLayout;
-        private final @Getter ImageView imageView;
+        private final TextView textView;
+        private final LinearLayout linearLayout;
+        private final ImageView imageView;
+
         public ViewHolder(View view) {
             super(view);
             textView = view.findViewById(R.id.tvItemText);
             linearLayout = view.findViewById(R.id.item);
             imageView = view.findViewById(R.id.itemIcon);
+        }
+
+        public TextView getTextView() {
+            return textView;
+        }
+
+        public LinearLayout getLinearLayout() {
+            return linearLayout;
+        }
+
+        public ImageView getImageView() {
+            return imageView;
         }
     }
 }

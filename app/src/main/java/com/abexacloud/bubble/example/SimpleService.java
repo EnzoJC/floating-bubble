@@ -2,6 +2,7 @@ package com.abexacloud.bubble.example;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 
@@ -57,17 +58,15 @@ public class SimpleService extends FloatingBubbleService {
                         Log.i(TAG, "Recent Apps");
                     }
                 }));
-
+        int bubbleSize = 70;
         return new FloatingBubbleConfig.Builder()
-//                .bubbleIcon(ContextCompat.getDrawable(context, R.drawable.web_icon))
+                .bubbleIcon(ContextCompat.getDrawable(context, R.drawable.web_icon))
                 .removeBubbleIcon(ContextCompat.getDrawable(context, R.drawable.close_default_icon))
-                .bubbleIconDp(64)
-                .removeBubbleIconDp(64)
+                .bubbleIconDp(bubbleSize)
+                .removeBubbleIconDp(bubbleSize)
                 .paddingDp(0)
                 .borderRadiusDp(25)
                 .physicsEnabled(true)
-                .expandableColor(Color.TRANSPARENT)
-                .triangleColor(Color.BLACK)
                 .gravity(Gravity.START)
                 .listaItemDTO(listaItemDTO)
 //                .removeBubbleAlpha(0.5f)

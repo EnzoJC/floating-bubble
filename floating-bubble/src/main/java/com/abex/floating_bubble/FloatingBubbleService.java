@@ -12,12 +12,14 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -171,8 +173,10 @@ public class FloatingBubbleService extends Service {
         expandableParams = getDefaultWindowParams();
         expandableParams.height = windowSize.y - iconSize - bottomMargin;
         expandableParams.gravity = Gravity.TOP | Gravity.START;
+//        expandableParams.width = iconSize;
+//        expandableParams.height = iconSize;
         expandableView.setVisibility(View.GONE);
-        ((LinearLayout) expandableView).setGravity(config.getGravity());
+        ((RelativeLayout) expandableView).setGravity(config.getGravity());
         expandableView.setPadding(padding, padding, padding, padding);
 
         // build dinamic items
@@ -257,7 +261,7 @@ public class FloatingBubbleService extends Service {
      *
      * @return the layout param
      */
-    protected WindowManager.LayoutParams getDefaultWindowParams() {
+    public static WindowManager.LayoutParams getDefaultWindowParams() {
         return getDefaultWindowParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
@@ -266,7 +270,7 @@ public class FloatingBubbleService extends Service {
      *
      * @return the layout param
      */
-    protected WindowManager.LayoutParams getDefaultWindowParams(int width, int height) {
+    protected static WindowManager.LayoutParams getDefaultWindowParams(int width, int height) {
         return new WindowManager.LayoutParams(
                 width,
                 height,
@@ -338,7 +342,7 @@ public class FloatingBubbleService extends Service {
      */
     private int dpToPixels(int dpSize) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        return Math.round(dpSize * (displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpSize, displayMetrics));
     }
 
     private void updateRotation() {
@@ -350,16 +354,14 @@ public class FloatingBubbleService extends Service {
                 }
                 Point windowsAux = new Point();
                 windowManager.getDefaultDisplay().getSize(windowsAux);
-                if (windowSize.x == windowsAux.x) {
-                    return;
+                if (windowSize.x != windowsAux.x) {
+                    if (windowSize.x == windowsAux.y) {
+                        removeAllViews();
+                    }
+                    setupWindowManager();
+                    setupViews();
+                    setTouchListener();
                 }
-                if (windowSize.x == windowsAux.y) {
-                    removeAllViews();
-                }
-                setupWindowManager();
-                setupViews();
-                setTouchListener();
-//                Log.i(TAG, "Update...");
             }
         }, 500);
     }
